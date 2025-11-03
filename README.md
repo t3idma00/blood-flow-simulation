@@ -71,12 +71,12 @@ The system helps visualize and analyze the wave reflections and flow transitions
 
 ## 👥 Contributors
 
-| Name | Role | Affiliation |
-|------|------|--------------|
-| **Dr. Maryamolsadat Samavaki** | Research Lead | University of Oulu |
-| **Juha-Matti Huusko** | Project Supervisor | Oulu University of Applied Sciences |
-| **Mahesh Idangodage** | IT Developer | Oulu University of Applied Sciences |
-| **Manjula Karunanayaka** | IT Developer | Oulu University of Applied Sciences |
+| Name | Role |
+|------|------|
+| **Dr. Maryamolsadat Samavaki** | Research Lead | 
+| **Juha-Matti Huusko** | Project Supervisor | 
+| **Mahesh Idangodage** | IT Developer | 
+| **Manjula Karunanayaka** | IT Developer | 
 
 ---
 
@@ -86,8 +86,8 @@ The system helps visualize and analyze the wave reflections and flow transitions
 
 This project lays the foundation for future development of a neurovascular simulation platform supporting:
 
--  Blood flow diagnostics  
--  Neurosurgical research  
+- Blood flow diagnostics  
+- Neurosurgical research  
 - Biomedical education
 
 
