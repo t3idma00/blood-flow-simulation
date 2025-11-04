@@ -34,7 +34,7 @@ The main goal is to create a **numerical solver** and an **interactive web dashb
 
 ---
 
-## 🚀 Quick Start
+##  How to Install
 
 ### 🧭 Backend Setup
 
@@ -118,7 +118,7 @@ The system helps visualize and analyze the wave reflections and flow transitions
 
 | Name | Role |
 |------|------|
-| **Dr. Maryamolsadat Samavaki** | Research Lead | 
+| **Maryamolsadat Samavaki** | Research Lead | 
 | **Juha-Matti Huusko** | Project Supervisor | 
 | **Mahesh Idangodage** | IT Developer | 
 | **Manjula Karunanayaka** | IT Developer | 
