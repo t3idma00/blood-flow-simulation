@@ -1,19 +1,19 @@
 # 🧬 Blood Flow Simulation Platform  
 ### 1D Navier–Stokes Model for Cerebral Vessel Dynamics  
 
-## 🧠 Project Overview
+## Project Overview
 
 This project simulates **blood flow in cerebral vessels** using the **1D Navier–Stokes equations (NSE)**.  
 It focuses on two domains:
 
--  **Healthy vessel (β = 0)** – simplified, stable flow  
+- **Healthy vessel (β = 0)** – simplified, stable flow  
 - **Aneurysm vessel (β ≠ 0)** – nonlinear, pressure-variant flow  
 
 The main goal is to create a **numerical solver** and an **interactive web dashboard** for visualizing flow behavior and studying wave propagation in arteries.
 
 ---
 
-## 🎯 Objectives
+##  Objectives
 
 - Build a Python-based solver for the 1D NSE  
 - Implement absorbing outlet boundary conditions (to minimize reflections)  
@@ -23,20 +23,20 @@ The main goal is to create a **numerical solver** and an **interactive web dashb
 
 ---
 
-## ⚙️ Tech Stack
+## Tech Stack
 
 | Layer | Technology | Purpose |
 |-------|-------------|----------|
-| 🧮 **Backend** | Python (FastAPI, NumPy) | Blood flow simulation engine |
-| 🌐 **Frontend** | HTML, CSS, JavaScript, Chart.js | Interactive visualization dashboard |
-| 🔗 **API** | REST (JSON) | Data communication |
-| 🧾 **Docs** | Markdown | Reports & research notes |
+| **Backend** | Python (FastAPI, NumPy) | Blood flow simulation engine |
+| **Frontend** | HTML, CSS, JavaScript, Chart.js | Interactive visualization dashboard |
+| **API** | REST (JSON) | Data communication |
+| **Docs** | Markdown | Reports & research notes |
 
 ---
 
 ##  How to Install
 
-### 🧭 Backend Setup
+###  Backend Setup
 
 ```bash
 # Navigate to backend directory
@@ -62,7 +62,7 @@ python -m uvicorn app.main:app --reload --port 8001
 # Should see: {"status": "ok"}
 ```
 
-### 🌐 Frontend Setup
+###  Frontend Setup
 
 ```bash
 # In a new terminal, navigate to frontend directory
@@ -75,7 +75,7 @@ python -m http.server 5173
 # http://localhost:5173
 ```
 
-### 📝 Additional Notes
+###  Additional Notes
 
 - Make sure both backend and frontend servers are running simultaneously
 - Backend runs on port 8001 to avoid conflicts
@@ -83,12 +83,12 @@ python -m http.server 5173
 - You can test different parameters in the web interface
 - For troubleshooting, check the browser's developer tools (F12 -> Console tab)
 
-## 🗓️ Work Schedule
+##  Work Schedule
 
 | **Week** | **Focus** | **Deliverables** |
 |-----------|------------|-----------------|
-| **Week 1** | **Healthy Vessel Model Setup** | Stable 1D solver (β = 0) and initial test runs. |
-| **Week 2** | **Healthy Model Validation** | Verified wave propagation, pressure–velocity plots. |
+| **Week 1** | **Healthy Vessel Model Setup** | Review project goals and 1D Navier–Stokes model for blood flow.|
+| **Week 2** | **Healthy Model Validation** | Implement stable 1D solver (β = 0) and performed initial test runs |
 | **Weeks 3–4** | **Aneurysm / Nonlinear Model** | Extended solver (β ≠ 0) and comparison with healthy case. |
 | **Weeks 5–6** | **Boundary Condition Tuning** | Absorbing outlet implemented and tested. |
 | **Week 7** | **Validation & Analysis** | Parameter tests and flow–pressure comparison graphs. |
@@ -96,7 +96,7 @@ python -m http.server 5173
 
 
 
-## 🧪 Simulation Workflow
+##  Simulation Workflow
 
 - Define model parameters (β, pressure, time step).  
    *For now, only the β = 0 healthy case is implemented.*
@@ -107,14 +107,14 @@ python -m http.server 5173
 
 ---
 
-## 👩‍🔬 Research Background
+##  Research Background
 
 This project supports research led by **Dr. Maryamolsadat Samavaki** on cerebral hemodynamics and aneurysm modeling.  
 The system helps visualize and analyze the wave reflections and flow transitions between healthy and diseased arterial sections.
 
 ---
 
-## 👥 Contributors
+## Contributors
 
 | Name | Role |
 |------|------|
@@ -125,7 +125,7 @@ The system helps visualize and analyze the wave reflections and flow transitions
 
 ---
 
-## 🧭 Vision
+##  Vision
 
  “To build a scalable, interactive simulation tool that connects medical research with modern computing.”
 
