@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>1D Blood Flow - Pressure vs Length</title>
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+  <script defer src="script.js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; }
+    h2 { color: #003366; }
+    #slider { width: 80%; margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <h2>Healthy Vessel (β = 0) - Pressure vs Length</h2>
+  <p>Move the slider to change simulation time.</p>
+  <input type="range" id="slider" min="0" max="0" step="1" value="0">
+  <div id="plot"></div>
+</body>
+</html>
