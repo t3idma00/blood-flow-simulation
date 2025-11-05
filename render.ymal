@@ -2,6 +2,6 @@ services:
   - type: web
     name: bloodflow-simulator
     env: python
-    buildCommand: pip install -r backend/requirements.txt
+    buildCommand: pip install -r requirements.txt
     startCommand: python backend/server.py
     plan: free
