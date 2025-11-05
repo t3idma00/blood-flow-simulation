@@ -1,6 +1,7 @@
 services:
   - type: web
-    name: blood-flow-simulation
+    name: bloodflow-simulator
     env: python
-    buildCommand: ""
-    startCommand: uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: python backend/server.py
+    plan: free
