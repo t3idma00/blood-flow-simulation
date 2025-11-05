@@ -1,7 +1,9 @@
-from fastapi import FastAPI
+from flask import Flask
+from flask_cors import CORS
 
-app = FastAPI()
+app = Flask(__name__)
+CORS(app)
 
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
+@app.route("/")
+def hello():
+    return {"message": "Hello from Bloodflow Backend!"}
