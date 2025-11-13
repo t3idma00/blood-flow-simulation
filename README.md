@@ -1,138 +1,165 @@
-# 🧬 Blood Flow Simulation Platform  
-### 1D Navier–Stokes Model for Cerebral Vessel Dynamics  
+# 🧬 Blood Flow Simulation Platform
+### 1D Navier–Stokes Model for Cerebral Vessel Dynamics
 
-## Project Overview
+## Overview
 
-This project simulates **blood flow in cerebral vessels** using the **1D Navier–Stokes equations (NSE)**.  
-It focuses on two domains:
+This project simulates blood flow in cerebral vessels using a 1D Navier–Stokes formulation and visualizes the results on a simple web UI. Two domains are targeted:
 
-- **Healthy vessel (β = 0)** – simplified, stable flow  
-- **Aneurysm vessel (β ≠ 0)** – nonlinear, pressure-variant flow  
+- Healthy vessel (β = 0) – stable flow case
+- Aneurysm vessel (β ≠ 0) – pressure/area nonlinearity (WIP)
 
-The main goal is to create a **numerical solver** and an **interactive web dashboard** for visualizing flow behavior and studying wave propagation in arteries.
-
----
-
-##  Objectives
-
-- Build a Python-based solver for the 1D NSE  
-- Implement absorbing outlet boundary conditions (to minimize reflections)  
-- Develop an interactive web dashboard for visualization  
-- Compare results between healthy and aneurysm models  
-- Provide clean and modular code for future research
+The repository contains a Python backend (Flask) and a static frontend (HTML + JS with Plotly).
 
 ---
 
 ## Tech Stack
 
-| Layer | Technology | Purpose |
-|-------|-------------|----------|
-| **Backend** | Python (FastAPI, NumPy) | Blood flow simulation engine |
-| **Frontend** | HTML, CSS, JavaScript, Chart.js | Interactive visualization dashboard |
-| **API** | REST (JSON) | Data communication |
-| **Docs** | Markdown | Reports & research notes |
+- Backend: Python, Flask, NumPy, SciPy
+- Frontend: HTML, CSS, JavaScript, Plotly
+- API: REST (JSON)
+
+Note: The codebase currently includes FastAPI in `requirements.txt`, but the running app is Flask-based.
 
 ---
 
-##  How to Install
+## Prerequisites
 
-###  Backend Setup
+- Python 3.10+ (recommended)
+- Windows PowerShell 5.1 or newer (commands below use PowerShell)
 
-```bash
-# Navigate to backend directory
-cd backend
+Optional (only if you plan to serve the frontend with a Node toolchain; not required here): Node.js.
 
-# Create virtual environment
-python -m venv .venv-1
+---
 
-# Activate virtual environment
-# For Windows:
-.\.venv-1\Scripts\Activate.ps1
-# For macOS/Linux:
-# source .venv-1/bin/activate
+## Local Setup (Windows PowerShell)
+
+### 1) Backend
+
+```powershell
+# From repo root
+Set-Location backend
+
+# Create and activate a virtual environment
+python -m venv .venv; .\.venv\Scripts\Activate.ps1
 
 # Install dependencies
 pip install -r requirements.txt
 
-# Start the backend server
-python -m uvicorn app.main:app --reload --port 8001
+# Start the backend (Flask)
+# Option A: Development (uses Flask's built-in server)
+$env:FLASK_APP = "app.main:app"; flask run --host 0.0.0.0 --port 8001
 
-# Verify backend is running by opening in browser:
-# http://localhost:8001/health
-# Should see: {"status": "ok"}
+# Option B: Production-style (gunicorn)
+gunicorn -w 2 -b 0.0.0.0:8001 app.main:app
 ```
 
-###  Frontend Setup
+Notes:
+- The current Flask app in `backend/app/main.py` only provides a root route (`/`). The simulation data endpoint (`/data`) is implemented in `backend/server.py`, but it depends on a function `run_simulation` that is not exported by any existing `simulation.py`. See "Known Issues" below.
 
-```bash
-# In a new terminal, navigate to frontend directory
-cd frontend
+### 2) Frontend
 
-# Start the frontend server
+The frontend is a static site; you can open `frontend/index.html` directly or serve it with a simple static server.
+
+```powershell
+# Option A: Open directly (double-click frontend/index.html)
+
+# Option B: Serve locally via Python
+Set-Location ..\frontend
 python -m http.server 5173
-
-# Open in your browser:
-# http://localhost:5173
+# Then browse to http://localhost:5173
 ```
 
-###  Additional Notes
+By default, `script.js` tries to fetch `/data` from the same origin. For a separate backend (e.g., running on port 8001), include `config.js` in `index.html` and set `API_URL` accordingly:
 
-- Make sure both backend and frontend servers are running simultaneously
-- Backend runs on port 8001 to avoid conflicts
-- The simulation interface will be available at http://localhost:5173
-- You can test different parameters in the web interface
-- For troubleshooting, check the browser's developer tools (F12 -> Console tab)
+```html
+<!-- In frontend/index.html, inside <head> -->
+<script src="config.js"></script>
+```
 
-##  Work Schedule
-
-| **Week** | **Focus** | **Deliverables** |
-|-----------|------------|-----------------|
-| **Week 1** | **Healthy Vessel Model Setup** | Review project goals and 1D Navier–Stokes model for blood flow.|
-| **Week 2** | **Healthy Model Validation** | Implement stable 1D solver (β = 0) and performed initial test runs |
-| **Weeks 3–4** | **Aneurysm / Nonlinear Model** | Extended solver (β ≠ 0) and comparison with healthy case. |
-| **Weeks 5–6** | **Boundary Condition Tuning** | Absorbing outlet implemented and tested. |
-| **Week 7** | **Validation & Analysis** | Parameter tests and flow–pressure comparison graphs. |
-| **Week 8** | **Final Reporting & Presentation** | Clean repo, summary report, and presentation-ready demo. |
-
-
-
-##  Simulation Workflow
-
-- Define model parameters (β, pressure, time step).  
-   *For now, only the β = 0 healthy case is implemented.*
-- Run the Python solver via FastAPI endpoint.  
-- Retrieve results (flow rate Q, area A, pressure P).  
-- Plot interactive charts on the React frontend.  
-- Analyze healthy vs aneurysm comparisons.
+```js
+// frontend/config.js
+const API_URL = "http://localhost:8001"; // or your deployed URL
+```
 
 ---
 
-##  Research Background
+## API
 
-This project supports research led by **Dr. Maryamolsadat Samavaki** on cerebral hemodynamics and aneurysm modeling.  
-The system helps visualize and analyze the wave reflections and flow transitions between healthy and diseased arterial sections.
+- `GET /data` → JSON with fields:
+   - `z`: number[] (axial coordinate)
+   - `time`: number[] (time samples)
+   - `pressure`: number[][] (pressure over space for each time index, in mmHg)
+
+This route is expected by `frontend/script.js`. In local dev with split servers, ensure `API_URL` points to the backend that serves `/data`.
+
+---
+
+## Deployment (Render)
+
+The file `render.ymal` should be renamed to `render.yaml`.
+
+Recommended backend service (Flask + gunicorn) with repo root as context and `rootDir: backend`:
+
+```yaml
+services:
+   - type: web
+      name: bloodflow-backend
+      env: python
+      rootDir: backend
+      buildCommand: pip install -r requirements.txt
+      startCommand: gunicorn app.main:app
+      envVars:
+         - key: PORT
+            value: 10000
+
+   - type: static
+      name: bloodflow-frontend
+      rootDir: frontend
+      buildCommand: ""
+      staticPublishPath: ./
+```
+
+If you want the backend to serve the frontend as well (single service), switch to `backend/server.py` as the entry point and make sure it works locally first (see Known Issues).
+
+---
+
+## Known Issues / To Do
+
+- `backend/server.py` imports `from simulation import run_simulation`, but no `simulation.py` exposing `run_simulation` exists. The simulation scripts (`simulation_t.py`, `simulation_z.py`) are interactive and do not export a function returning `(z, time, P)`.
+   - Action: create `backend/simulation.py` with `run_simulation()` that returns the arrays, or refactor one of the existing scripts to expose this function.
+   - Once available, you can run a single server that serves both the API and static files:
+      ```powershell
+      Set-Location backend; .\.venv\Scripts\Activate.ps1; python server.py
+      # Browse to http://localhost:10000 (or PORT env var)
+      ```
+
+- The README previously referenced FastAPI/uvicorn; the actual app is Flask. The instructions above are now aligned with Flask.
+
+- `frontend/index.html` currently does not include `config.js`. If your backend runs on a different origin/port, add `<script src="config.js"></script>` and set `API_URL`.
+
+- CORS: If you serve frontend and backend on different ports, ensure CORS is enabled in Flask (package `flask-cors` is already in requirements; see `backend/app/main.py`).
+
+---
+
+## Troubleshooting
+
+- 404 on `/data`: Ensure you are running a backend that exposes `/data` (currently `backend/server.py` once `run_simulation` exists), and that `config.js` points to it when using a separate static server for the frontend.
+- CORS errors in browser: Serve frontend from the backend (same origin) or enable CORS and set `API_URL` to the backend URL.
+- Port already in use: Change the port in your run command (e.g., `--port 8002`) or stop the conflicting process.
 
 ---
 
 ## Contributors
 
-| Name | Role |
-|------|------|
-| **Maryamolsadat Samavaki** | Research Lead | 
-| **Juha-Matti Huusko** | Project Supervisor | 
-| **Mahesh Idangodage** | IT Developer | 
-| **Manjula Karunanayaka** | IT Developer | 
+- Maryamolsadat Samavaki — Research Lead
+- Juha-Matti Huusko — Project Supervisor
+- Mahesh Idangodage — IT Developer
+- Manjula Karunanayaka — IT Developer
 
 ---
 
-##  Vision
+## Vision
 
- “To build a scalable, interactive simulation tool that connects medical research with modern computing.”
-
-This project lays the foundation for future development of a neurovascular simulation platform supporting:
-
-- Blood flow diagnostics  
-- Neurosurgical research  
-- Biomedical education
+To build a scalable, interactive simulation tool that connects medical research with modern computing for blood flow diagnostics, neurosurgical research, and biomedical education.
 
 
