@@ -46,7 +46,7 @@ Set-Location backend
 python -m venv .venv-1; .\.venv-1\Scripts\Activate.ps1
 
 # Install dependencies
-pip install -r requirements.txt
+python -m pip install -r requirements.txt
 
 # Start the backend (Flask dev server)
 $env:FLASK_APP = "app.main:app"; flask run --host 0.0.0.0 --port 8001
