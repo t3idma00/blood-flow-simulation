@@ -1,2 +1,1 @@
-// config.js
-const API_URL = "https://blood-flow-simulation-1.onrender.com";
+window.API_URL = "https://blood-flow-backend.onrender.com";
