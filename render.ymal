@@ -5,10 +5,7 @@ services:
     env: python
     rootDir: backend
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn app.main:app  # change if entry file is different
-    envVars:
-      - key: PORT
-        value: 10000
+    startCommand: gunicorn -b 0.0.0.0:$PORT app.main:app
 
   # Frontend Service
   - type: static
