@@ -1,0 +1,55 @@
+<!-- frontend-node/public/artery.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Artery Windkessel Simulation - Plotly</title>
+  <link rel="stylesheet" href="styles.css" />
+  <!-- Plotly CDN -->
+  <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+</head>
+<body class="artery-body">
+  <div id="artery-ui">
+    <h1>Arterial Blood Flow Simulation</h1>
+    <p>
+      Time-series of pressure, flow, and area at <b>inlet</b>, <b>midpoint</b>, and <b>outlet</b>, including Windkessel outlet behavior.
+    </p>
+    <button id="runBtn">Run Simulation</button>
+    <span id="statusLabel">Idle</span>
+  </div>
+
+  <div id="artery-plots">
+    <div class="plot-card">
+      <h2>Pressure at Inlet / Mid / Outlet</h2>
+      <div id="pressurePlot"></div>
+    </div>
+
+    <div class="plot-card">
+      <h2>Flow at Inlet / Mid / Outlet</h2>
+      <div id="flowPlot"></div>
+    </div>
+
+    <div class="plot-card">
+      <h2>Area at Inlet / Mid / Outlet</h2>
+      <div id="areaPlot"></div>
+    </div>
+
+    <div class="plot-card">
+      <h2>Outlet Pressure</h2>
+      <div id="outletPressurePlot"></div>
+    </div>
+
+    <div class="plot-card">
+      <h2>Outlet Flow</h2>
+      <div id="outletFlowPlot"></div>
+    </div>
+
+    <div class="plot-card">
+      <h2>Windkessel Pressure</h2>
+      <div id="wkPressurePlot"></div>
+    </div>
+  </div>
+
+  <script src="artery.js"></script>
+</body>
+</html>

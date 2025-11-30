@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Blood Flow Simulation - Plotly</title>
+  <link rel="stylesheet" href="styles.css" />
+
+  <!-- Plotly CDN -->
+  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+</head>
+
+<body>
+
+  <div id="ui-panel">
+      <h1>Blood Flow Simulation</h1>
+
+      <div class="slider-row">
+        <label for="timeSlider">Time index:</label>
+        <input type="range" id="timeSlider" min="0" max="0" value="0" step="1" />
+        <span id="timeLabel">τ = 0.00000</span>
+      </div>
+  </div>
+
+  <div id="plot-container">
+      <div id="plot"></div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
