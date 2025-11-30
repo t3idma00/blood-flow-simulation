@@ -1,25 +1,35 @@
-# backend-python/api/controllers.py
+from .registry import SIMULATION_REGISTRY
 
-from simulations.healthy_domain_sim import run_simulation
-from simulations.artery_sim_full import run_artery_simulation
-
-
-def get_simulation():
+def normalize_result(result):
     """
-    First PDE (dimensionless a, q vs x, τ) used with Three.js
+    Ensures the simulation output format is always standardized.
+    Acceptable formats:
+       (x, times, a, q)
+       (x, times, a_arr, q_arr)
     """
-    x, times, a_arr, q_arr = run_simulation()
+    if len(result) != 4:
+        raise RuntimeError("Simulation must return 4 values")
+
+    x, times, a, q = result
+    return x, times, a, q
+
+
+def run_simulation_by_name(name):
+    if name not in SIMULATION_REGISTRY:
+        raise KeyError(f"Simulation '{name}' not found")
+
+    sim_func = SIMULATION_REGISTRY[name]
+    result = sim_func()     # call simulation
+
+    x, times, a, q = normalize_result(result)
+
     return {
         "x": x.tolist(),
         "times": times.tolist(),
-        "a": a_arr.tolist(),
-        "q": q_arr.tolist(),
+        "a": a.tolist(),
+        "q": q.tolist(),
     }
 
 
-def get_artery_simulation():
-    """
-    Full healthy artery + Windkessel simulation.
-    All values are already JSON-friendly.
-    """
-    return run_artery_simulation()
+def list_simulations():
+    return list(SIMULATION_REGISTRY.keys())

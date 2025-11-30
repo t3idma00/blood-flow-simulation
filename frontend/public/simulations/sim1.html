@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Simulation 1</title>
+
+    <!-- Plotly -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="../styles.css" />
+
+</head>
+<body>
+
+    <!-- Any global navigation -->
+    <script src="../nav.js"></script>
+
+    <h2 style="margin-left:20px;">Simulation 1</h2>
+
+    <!-- Slider -->
+    <div style="padding:20px;">
+        <label>Time:</label>
+        <input type="range" id="timeSlider" />
+        <span id="timeLabel"></span>
+    </div>
+
+    <!-- Plotly chart -->
+    <div id="plot" style="width:95%; height:600px; margin:0 auto;"></div>
+
+    <!-- Main controller -->
+<script src="../app.js"></script>
+
+    <!-- Tell app.js which simulation to load -->
+    <script>
+        window.history.replaceState(null, "", "?sim=sim1");
+    </script>
+</body>
+</html>

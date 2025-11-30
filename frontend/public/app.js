@@ -1,68 +1,93 @@
-// frontend-node/public/app.js
+/**********************************************
+ * BACKEND URL AUTO SWITCH (LOCAL <-> RENDER)
+ **********************************************/
+const BACKEND_LOCAL  = "http://localhost:8000";
+const BACKEND_RENDER = "https://blood-flow-backend.onrender.com";
 
-const API_URL = "http://localhost:8000/simulation";
+const API_BASE =
+    location.hostname === "localhost"
+        ? BACKEND_LOCAL
+        : BACKEND_RENDER;
 
-let simData = null;
+/**********************************************
+ * DETECT SIMULATION NAME: ?sim=sim1
+ **********************************************/
+const urlParams = new URLSearchParams(window.location.search);
+const simName = urlParams.get("sim");
 
+if (!simName) {
+    alert("Missing simulation name! Example: ?sim=sim1");
+}
+
+/**********************************************
+ * ELEMENTS
+ **********************************************/
 const timeSlider = document.getElementById("timeSlider");
 const timeLabel  = document.getElementById("timeLabel");
 
-// Load simulation from FastAPI
+let simData = null;
+
+/**********************************************
+ * LOAD SIMULATION FROM BACKEND
+ **********************************************/
 async function loadSimulation() {
-    const res = await fetch(API_URL);
-    const data = await res.json();
+    const endpoint = `${API_BASE}/simulation/${simName}`;
+    console.log("Fetching:", endpoint);
 
-    simData = data;
+    const res = await fetch(endpoint);
+    if (!res.ok) {
+        timeLabel.textContent = `Error loading ${simName}`;
+        console.log(await res.text());
+        return;
+    }
 
-    // Prepare slider
+    simData = await res.json();
+
+    timeSlider.min = 0;
     timeSlider.max = simData.times.length - 1;
     timeSlider.value = 0;
 
     drawFrame(0);
-
     timeSlider.addEventListener("input", () => {
         drawFrame(parseInt(timeSlider.value));
     });
 }
 
-function drawFrame(frameIndex) {
-    const x = simData.x;
-    const a = simData.a[frameIndex];
-    const q = simData.q[frameIndex];
-    const tau = simData.times[frameIndex];
+/**********************************************
+ * PLOT FRAME USING PLOTLY
+ **********************************************/
+function drawFrame(i) {
+    const x   = simData.x;
+    const a   = simData.a[i];
+    const q   = simData.q[i];
+    const tau = simData.times[i];
 
-    timeLabel.textContent = `τ = ${tau.toFixed(5)} (index ${frameIndex})`;
+    timeLabel.textContent = `τ = ${tau.toFixed(5)} (index ${i})`;
 
-    const traceA = {
-        x: x,
-        y: a,
-        name: "a(x, τ)",
-        mode: "lines",
-        line: { color: "orange", width: 3 }
-    };
-
-    const traceQ = {
-        x: x,
-        y: q,
-        name: "q(x, τ)",
-        mode: "lines",
-        line: { color: "blue", width: 3 }
-    };
-
-    const layout = {
-        title: `MacCormack Scheme — τ = ${tau.toFixed(5)}`,
-        xaxis: {
-            title: "x (dimensionless)",
-            range: [0, 1]
+    Plotly.newPlot("plot", [
+        {
+            x: x,
+            y: a,
+            name: "a(x, τ)",
+            mode: "lines",
+            line: { color: "orange", width: 3 }
         },
-        yaxis: {
-            title: "Value"
-        },
-        margin: { t: 50, r: 30, l: 60, b: 60 }
-    };
-
-    Plotly.newPlot("plot", [traceA, traceQ], layout, { responsive: true });
+        {
+            x: x,
+            y: q,
+            name: "q(x, τ)",
+            mode: "lines",
+            line: { color: "blue", width: 3 }
+        }
+    ], {
+        title: `${simName} — τ = ${tau.toFixed(5)}`,
+        xaxis: { title: "x (dimensionless)" },
+        yaxis: { title: "Value" },
+        margin: { t: 40, l: 40, b: 50, r: 20 }
+    });
 }
 
-// Run everything
+/**********************************************
+ * START
+ **********************************************/
 loadSimulation();

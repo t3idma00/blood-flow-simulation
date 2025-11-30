@@ -1,30 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Blood Flow Simulation - Plotly</title>
-  <link rel="stylesheet" href="styles.css" />
+<html>
+  <head>
+    <title>Blood Flow Simulation — Home</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <script src="nav.js"></script>
 
-  <!-- Plotly CDN -->
-  <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-</head>
+    <div class="home-container">
+      <h1>Welcome to Blood Flow Simulations</h1>
+      <p>Select a simulation below:</p>
 
-<body>
-
-  <div id="ui-panel">
-      <h1>Blood Flow Simulation</h1>
-
-      <div class="slider-row">
-        <label for="timeSlider">Time index:</label>
-        <input type="range" id="timeSlider" min="0" max="0" value="0" step="1" />
-        <span id="timeLabel">τ = 0.00000</span>
+      <div class="sim-list">
+        <a href="simulations/sim1.html">Simulation 1</a>
+        <a href="simulations/sim2.html">Simulation 2</a>
+        <a href="simulations/sim3.html">Simulation 3</a>
+        <a href="simulations/sim4.html">Simulation 4</a>
+        <a href="simulations/sim5.html">Simulation 5</a>
       </div>
-  </div>
-
-  <div id="plot-container">
-      <div id="plot"></div>
-  </div>
-
-  <script src="app.js"></script>
-</body>
+    </div>
+  </body>
 </html>
