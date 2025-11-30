@@ -1,33 +1,18 @@
 services:
-  # ============================
-  # 1 BACKEND - FastAPI (Python)
-  # ============================
   - type: web
     name: blood-flow-backend
     env: python
-    rootDir: backend-python
+    rootDir: blood-flow-simulation/backend
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn api.server:app --host 0.0.0.0 --port $PORT
-
     plan: free
-    autoDeploy: true
 
-    envVars:
-      - key: PYTHON_VERSION
-        value: 3.10
-
-  # ============================
-  # 2 FRONTEND - Static Website
-  # ============================
   - type: web
-    name: blood-flow-simulation
+    name: blood-flow-frontend
     env: static
-    rootDir: frontend-node
-
-    # For static HTML + JS
-    buildCommand: |
-      npm install
-
+    rootDir: blood-flow-simulation/frontend
+    buildCommand: npm install
     staticPublishPath: public
     plan: free
+    
     autoDeploy: true
