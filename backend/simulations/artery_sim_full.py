@@ -257,6 +257,11 @@ def run_artery_simulation():
 
     return result
 
+# Wrapper for auto-registration
+def run_simulation():
+    """Thin wrapper so the registry picks up this simulation under key 'artery_sim_full'."""
+    return run_artery_simulation()
+
 
 if __name__ == "__main__":
     data = run_artery_simulation()

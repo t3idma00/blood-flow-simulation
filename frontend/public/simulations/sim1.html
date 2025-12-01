@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Simulation 1</title>
+    <title>Simulation 2</title>
 
     <!-- Plotly -->
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
@@ -15,11 +15,11 @@
     <!-- Any global navigation -->
     <script src="../nav.js"></script>
 
-    <h2 style="margin-left:20px;">Simulation 1</h2>
+    <h2 style="margin-left:20px;">Simulation 2 : Dimensionless test </h2>
 
     <!-- Slider -->
     <div style="padding:20px;">
-        <label>Time:</label>
+        <label>Time (s):</label>
         <input type="range" id="timeSlider" />
         <span id="timeLabel"></span>
     </div>
@@ -27,12 +27,13 @@
     <!-- Plotly chart -->
     <div id="plot" style="width:95%; height:600px; margin:0 auto;"></div>
 
-    <!-- Main controller -->
-<script src="../app.js"></script>
-
     <!-- Tell app.js which simulation to load -->
     <script>
+        // Hide sim name in the plot title and show only τ
+        window.PLOT_TITLE_PREFIX = "";
         window.history.replaceState(null, "", "?sim=sim1");
     </script>
+    <!-- Main controller -->
+    <script src="../app.js"></script>
 </body>
 </html>

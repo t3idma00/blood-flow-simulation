@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Simulation 1</title>
+	<!-- Plotly -->
+	<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+	<link rel="stylesheet" href="../styles.css" />
+	<script>
+		// Configure Sim3 to load TestC1 backend simulation
+		window.PLOT_TITLE_PREFIX = ""; // show only τ in the plot title
+		window.history.replaceState(null, "", "?sim=TestC1");
+	</script>
+</head>
+<body>
+	<script src="../nav.js"></script>
+	<h2 style="margin-left:20px;">Simulation 1 : Test C1 </h2>
+	<div style="padding:20px;">
+		<label>Time (s):</label>
+		<input type="range" id="timeSlider" />
+		<span id="timeLabel"></span>
+	</div>
+	<div id="plot" style="width:95%; height:600px; margin:0 auto;"></div>
+	<script src="../app.js"></script>
+</body>
+</html>

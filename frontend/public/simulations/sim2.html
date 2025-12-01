@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Blood Flow Simulation — Simulation 3</title>
+    <!-- Plotly -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <link rel="stylesheet" href="../styles.css" />
+    <head>
+      <title>Blood Flow Simulation — Simulation 3:</title>
+      <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+      <link rel="stylesheet" href="../styles.css" />
+    </head>
+    <body>
+      <script src="../nav.js"></script>
+      <h2 style="margin-left:20px;">Simulation 3 : Healthy Vessel (Windkessel, MacCormack): may take up to a minute to load</h2>
+
+      <div id="plots" style="width:95%; margin:0 auto;"></div>
+
+      <script>
+        const BACKEND_LOCAL  = "http://localhost:8000";
+        const BACKEND_RENDER = "https://blood-flow-backend.onrender.com";
+        const API_BASE = location.hostname === "localhost" ? BACKEND_LOCAL : BACKEND_RENDER;
+
+        async function loadTS() {
+          const res = await fetch(`${API_BASE}/simulation-raw/artery_sim_full`);
+          if (!res.ok) {
+            console.error('Failed to load artery_sim_full', await res.text());
+            return;
+          }
+          const data = await res.json();
+          const t = data.t;
+          const labels = ["Inlet (0 m)", "Mid (0.075 m)", "Outlet (0.15 m)"];
+
+          const figData = [];
+          const SCALE = 1e6; // display scaling to remove micro prefix
+          // Pressure (mmHg)
+          for (let k = 0; k < data.pressure_mmHg.length; k++) {
+            figData.push({
+              x: t,
+              y: data.pressure_mmHg[k],
+              name: `Pressure — ${labels[k]}`,
+              yaxis: 'y1',
+              type: 'scatter',
+              mode: 'lines'
+            });
+          }
+          // Flow (scaled ×10^6)
+          for (let k = 0; k < data.flow.length; k++) {
+            figData.push({
+              x: t,
+              y: data.flow[k].map(v => v * SCALE),
+              name: `Flow — ${labels[k]}`,
+              yaxis: 'y2',
+              type: 'scatter',
+              mode: 'lines'
+            });
+          }
+          // Area (scaled ×10^6)
+          for (let k = 0; k < data.area.length; k++) {
+            figData.push({
+              x: t,
+              y: data.area[k].map(v => v * SCALE),
+              name: `Area — ${labels[k]}`,
+              yaxis: 'y3',
+              type: 'scatter',
+              mode: 'lines'
+            });
+          }
+
+          const layout = {
+            grid: {rows: 3, columns: 1, pattern: 'independent', roworder: 'top to bottom'},
+            margin: { t: 40, l: 50, r: 10 },
+            height: 900,
+            legend: { orientation: 'h' },
+            yaxis: { title: 'Pressure [mmHg]' },
+            yaxis2: { title: 'Flow [×10^6 m^3/s]' , anchor: 'x2' },
+            yaxis3: { title: 'Area [×10^6 m^2]' , anchor: 'x3' },
+            xaxis: { title: 'Time [s]' },
+            xaxis2: { title: 'Time [s]' },
+            xaxis3: { title: 'Time [s]' }
+          };
+
+          // Assign traces to subplots
+          for (let i = 0; i < 3; i++) { figData[i].xaxis = 'x'; figData[i].yaxis = 'y'; }
+          for (let i = 3; i < 6; i++) { figData[i].xaxis = 'x2'; figData[i].yaxis = 'y2'; }
+          for (let i = 6; i < 9; i++) { figData[i].xaxis = 'x3'; figData[i].yaxis = 'y3'; }
+
+          Plotly.newPlot('plots', figData, layout);
+        }
+
+        loadTS();
+      </script>
+    </body>
+  </body>
+</html>

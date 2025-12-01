@@ -23,13 +23,28 @@ def run_simulation_by_name(name):
 
     x, times, a, q = normalize_result(result)
 
+    def to_list(v):
+        return v.tolist() if hasattr(v, "tolist") else v
+
     return {
-        "x": x.tolist(),
-        "times": times.tolist(),
-        "a": a.tolist(),
-        "q": q.tolist(),
+        "x": to_list(x),
+        "times": to_list(times),
+        "a": to_list(a),
+        "q": to_list(q),
     }
 
 
 def list_simulations():
     return list(SIMULATION_REGISTRY.keys())
+
+
+def run_simulation_raw(name):
+    """
+    Run a simulation and return its raw output without normalization.
+    Useful for simulations that return dictionaries or custom payloads
+    (e.g., artery_sim_full time-series data).
+    """
+    if name not in SIMULATION_REGISTRY:
+        raise KeyError(f"Simulation '{name}' not found")
+    sim_func = SIMULATION_REGISTRY[name]
+    return sim_func()

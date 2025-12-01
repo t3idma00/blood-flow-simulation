@@ -1,0 +1,10 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Run FastAPI server",
+			"type": "shell",
+			"command": "\"F:/company oriented project/blood-flow-simulation/.venv/Scripts/python.exe\" -m uvicorn api.server:app --host 127.0.0.1 --port 8000"
+		}
+	]
+}

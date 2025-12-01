@@ -62,27 +62,63 @@ function drawFrame(i) {
     const q   = simData.q[i];
     const tau = simData.times[i];
 
-    timeLabel.textContent = `τ = ${tau.toFixed(5)} (index ${i})`;
+    timeLabel.textContent = `τ = ${tau.toFixed(5)} s (index ${i})`;
+
+    // Compute global min/max for static y-axis (safe for large arrays)
+    if (typeof drawFrame.ymin === 'undefined' || typeof drawFrame.ymax === 'undefined') {
+        let ymin = Infinity;
+        let ymax = -Infinity;
+        for (let arr of simData.a) {
+            for (let v of arr) { if (v < ymin) ymin = v; if (v > ymax) ymax = v; }
+        }
+        for (let arr of simData.q) {
+            for (let v of arr) { if (v < ymin) ymin = v; if (v > ymax) ymax = v; }
+        }
+        const padding = 0.2 * (ymax - ymin);
+        drawFrame.ymin = ymin - padding;
+        drawFrame.ymax = ymax + padding;
+    }
+    const prefix = (typeof window !== 'undefined' && typeof window.PLOT_TITLE_PREFIX !== 'undefined')
+        ? window.PLOT_TITLE_PREFIX
+        : simName;
+    // Axis titles: dimensional vs dimensionless
+    const xTitle = simName === 'TestC1' ? 'z' : 'x (dimensionless)';
+    const yTitle = simName === 'TestC1' ? 'Value (×10^6)' : 'Dimensionless Value';
+
+    // Optional scaling for TestC1 to avoid micro prefix
+    let aPlot = a;
+    let qPlot = q;
+    if (simName === 'TestC1') {
+        const scale = 1e6; // multiply data by 10^6 for display (remove micro prefix)
+        aPlot = a.map(v => v * scale);
+        qPlot = q.map(v => v * scale);
+        // Adjust stored global min/max for scaled display
+        if (!drawFrame.testC1ScaledRange) {
+            drawFrame.testC1ScaledRange = true;
+            drawFrame.ymin *= scale;
+            drawFrame.ymax *= scale;
+        }
+    }
 
     Plotly.newPlot("plot", [
         {
             x: x,
-            y: a,
-            name: "a(x, τ)",
+            y: aPlot,
+            name: simName === 'TestC1' ? 'A(z, t)' : 'a(x, τ)',
             mode: "lines",
             line: { color: "orange", width: 3 }
         },
         {
             x: x,
-            y: q,
-            name: "q(x, τ)",
+            y: qPlot,
+            name: simName === 'TestC1' ? 'Q(z, t)' : 'q(x, τ)',
             mode: "lines",
             line: { color: "blue", width: 3 }
         }
     ], {
-        title: `${simName} — τ = ${tau.toFixed(5)}`,
-        xaxis: { title: "x (dimensionless)" },
-        yaxis: { title: "Value" },
+        title: `${prefix ? prefix + ' — ' : ''}τ = ${tau.toFixed(5)}`,
+        xaxis: { title: xTitle },
+        yaxis: { title: yTitle, range: [drawFrame.ymin, drawFrame.ymax] },
         margin: { t: 40, l: 40, b: 50, r: 20 }
     });
 }

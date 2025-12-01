@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from .controllers import run_simulation_by_name, list_simulations
+from .controllers import run_simulation_by_name, list_simulations, run_simulation_raw
 
 router = APIRouter()
 
@@ -11,6 +11,16 @@ def get_simulation_list():
 def get_simulation(name: str):
     try:
         return run_simulation_by_name(name)
+    except KeyError:
+        raise HTTPException(status_code=404, detail="Simulation not found")
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get("/simulation-raw/{name}")
+def get_simulation_raw(name: str):
+    try:
+        return run_simulation_raw(name)
     except KeyError:
         raise HTTPException(status_code=404, detail="Simulation not found")
     except Exception as e:

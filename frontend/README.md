@@ -36,43 +36,59 @@ The main goal is to create a **numerical solver** and an **interactive web dashb
 
 ##  How to Install
 
-###  Backend Setup
+These steps are for Windows PowerShell 5.1. The project has a FastAPI backend (port 8000) and a simple Node static server for the frontend (port 3000).
+
+###  Backend Setup (FastAPI)
 
 ```powershell
 # From repo root, go to backend
-Set-Location backend
+Set-Location "backend"
 
-# Create and activate a virtual environment (Windows PowerShell)
-python -m venv .venv-1; .\.venv-1\Scripts\Activate.ps1
+# Create and activate a virtual environment
+python -m venv .venv; .\.venv\Scripts\Activate.ps1
 
 # Install dependencies
-python -m pip install -r requirements.txt
+python -m pip install --upgrade pip; python -m pip install -r requirements.txt
 
-# Start the backend (Flask dev server)
-$env:FLASK_APP = "app.main:app"; flask run --host 0.0.0.0 --port 8001
+# Run the FastAPI server (uvicorn)
+python -m uvicorn api.server:app --host 127.0.0.1 --port 8000
 
-# Verify backend is running:
-# Open http://localhost:8001/ and you should see a JSON message
+# Verify
+# Visit http://127.0.0.1:8000/ in your browser
 ```
 
-###  Frontend Setup
+Tips:
+- If the port is already in use, stop any running Python processes:
+    ```powershell
+    Get-Process | Where-Object { $_.ProcessName -like '*python*' } | Stop-Process -Force
+    ```
+
+###  Frontend Setup (Node static server)
 
 ```powershell
 # In a new terminal, go to frontend
-Set-Location frontend
+Set-Location "frontend"
 
-# Serve the static site
-python -m http.server 5173
+# Install Node dependencies
+npm install
+
+# Start the static server
+npm start
 
 # Open in your browser:
-# http://localhost:5173
+# http://localhost:3000
 ```
+
+Notes:
+- The frontend auto-switches API base URL: it uses `http://localhost:8000` when running locally.
+- Ensure backend is running before opening simulation pages.
+- Simulation pages: `public/simulations/sim1.html`, `sim2.html` (others may be hidden by default).
 
 ###  Additional Notes
 
 - Run backend and frontend in parallel.
-- Backend runs on port 8001; frontend on 5173.
-- If the page can’t load data, ensure the backend is running and consider pointing the frontend to the backend URL via a config file.
+- Backend runs on port 8000; frontend on 3000.
+- If the page can’t load data, ensure the backend is running and that the browser can reach `http://localhost:8000`.
 
 ##  Work Schedule
 
