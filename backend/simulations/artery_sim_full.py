@@ -19,12 +19,13 @@ def run_artery_simulation():
     dz = 1.0e-3              # spatial step [m]
     Nx = int(L/dz) + 1       # number of grid points
 
-    # Time
+    # Time (optimized for cloud deployment)
     T_heart = 1.0            # heart period [s]
     N_cycles = 1             # can change to run more cycles
     T_final = N_cycles * T_heart
-    dt = 1.0e-5              # time step [s]
+    dt = 5.0e-5              # time step [s] (increased 5x for speed, stable)
     Nt = int(T_final / dt)
+    save_every = 5           # save every Nth timestep for output
 
     # Material / fluid properties
     rho = 1060.0             # density [kg/m³]
@@ -117,7 +118,7 @@ def run_artery_simulation():
     monitor_z = np.array([0.0, L/2, L])
     monitor_idx = [np.argmin(np.abs(z - zz)) for zz in monitor_z]
 
-    # histories for each location
+    # histories for each location (decimated)
     A_hist_multi = [[] for _ in monitor_z]
     Q_hist_multi = [[] for _ in monitor_z]
     P_hist_multi = [[] for _ in monitor_z]
@@ -125,11 +126,13 @@ def run_artery_simulation():
     # outlet time derivative buffers for Windkessel
     Q_out_hist = np.zeros(3)
 
-    # global time histories
+    # global time histories (decimated)
     P_out_hist = []
     Q_out_hist_rec = []
     P_wk_hist = []
     t_hist = []
+    
+    print(f"Starting artery simulation: {Nt} steps, saving every {save_every}")
 
     # -------------------------
     # 4. Linearized Flux Function
@@ -207,21 +210,28 @@ def run_artery_simulation():
         A_tilde = A_new
         Q_tilde = Q_new
 
-        # --- record histories ---
-        t_curr = t + dt
-        t_hist.append(t_curr)
+        # --- record histories (with decimation) ---
+        if n % save_every == 0 or n == Nt - 1:  # save every Nth step + final step
+            t_curr = t + dt
+            t_hist.append(t_curr)
 
-        P_out = P_ref + alpha * A_tilde[-1]
-        P_out_hist.append(P_out)
-        P_wk_hist.append(P_out)
-        Q_out_hist_rec.append(Q_tilde[-1])
+            P_out = P_ref + alpha * A_tilde[-1]
+            P_out_hist.append(P_out)
+            P_wk_hist.append(P_out)
+            Q_out_hist_rec.append(Q_tilde[-1])
 
-        # monitor at inlet, mid, outlet
-        for k, idx in enumerate(monitor_idx):
-            A_hist_multi[k].append(A_tilde[idx] + A_ref)
-            Q_hist_multi[k].append(Q_tilde[idx])
-            P_hist_multi[k].append(P_ref + alpha * A_tilde[idx])
+            # monitor at inlet, mid, outlet
+            for k, idx in enumerate(monitor_idx):
+                A_hist_multi[k].append(A_tilde[idx] + A_ref)
+                Q_hist_multi[k].append(Q_tilde[idx])
+                P_hist_multi[k].append(P_ref + alpha * A_tilde[idx])
+        
+        # Progress logging every 20% 
+        if n % (Nt // 5) == 0:
+            print(f"Simulation progress: {100*n//Nt}% ({n}/{Nt} steps)")
 
+    print("Simulation completed! Processing results...")
+    
     # -------------------------
     # 6. Convert to arrays and JSON-friendly lists
     # -------------------------
