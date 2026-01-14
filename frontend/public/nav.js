@@ -8,10 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <a href="/simulations/sim3.html">Simulation 1</a>
         <a href="/simulations/sim1.html">Simulation 2</a>
         <a href="/simulations/sim2.html">Simulation 3</a>
-        <!--
         <a href="/simulations/sim4.html">Simulation 4</a>
-        <a href="/simulations/sim5.html">Simulation 5</a>
-        -->
       </div>
     </nav>
   `;
