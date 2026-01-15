@@ -12,9 +12,14 @@ def run_simulation(snap_every: int = 10):
     Q_snap  : (num_frames, N) flow perturbation snapshots
     """
 
+    # TEST MODEL: DAMPED LINEAR WAVE SYSTEM
+    #   Q_t + c^2 A_z + delta Q = 0
+    #   A_t + Q_z = 0
+
     # PARAMETERS
     c = 1.0
     delta = 1.0 / 5.0
+    alpha = 1.0
 
     # SPATIAL DOMAIN
     L = 1.0
@@ -27,22 +32,25 @@ def run_simulation(snap_every: int = 10):
     dt = 5e-4
     Nt = int(T_FINAL / dt)
 
+    CFL = c * dt / dz
+    print(f"CFL = {CFL:.3f} (must be <= 1)")
+
     # INITIAL CONDITIONS (SMOOTH GAUSSIANS)
     sigma = 4.0 * dz
 
-    A = 0.02 * np.exp(-((z - 0.7) ** 2) / sigma**2)
-    Q = 0.02 * np.exp(-((z - 0.4) ** 2) / sigma**2)
+    A = np.exp(-((z - 0.7) ** 2) / sigma**2)
+    Q = np.exp(-((z - 0.4) ** 2) / sigma**2)
 
     # BOUNDARY CONDITIONS (FREE FLOW / NON-REFLECTING)
-    def inlet_bc(A_arr, Q_arr):
-        Wm = Q_arr[1] - c * A_arr[1]
-        A_arr[0] = -Wm / (2 * c)
-        Q_arr[0] = Wm / 2
+    def inlet_bc(A, Q):
+        Wm = Q[1] - c * A[1]
+        A[0] = -Wm / (2 * c)
+        Q[0] = Wm / 2
 
-    def outlet_bc(A_arr, Q_arr):
-        Wp = Q_arr[-2] + c * A_arr[-2]
-        A_arr[-1] = Wp / (2 * c)
-        Q_arr[-1] = Wp / 2
+    def outlet_bc(A, Q):
+        Wp = Q[-2] + c * A[-2]
+        A[-1] = Wp / (2 * c)
+        Q[-1] = Wp / 2
 
     # STORAGE
     A_snap = []
@@ -101,19 +109,20 @@ if __name__ == "__main__":
 
     z, times, A_snap, Q_snap = run_simulation()
 
+    # VISUALIZATION: A(z,t) AND Q(z,t) WITH SLIDER
     fig, ax = plt.subplots(figsize=(9, 4))
     plt.subplots_adjust(bottom=0.25)
 
     line_A, = ax.plot(
         z, A_snap[0],
         lw=2, color="tab:blue",
-        label="Area perturbation A",
+        label="Area perturbation A"
     )
 
     line_Q, = ax.plot(
         z, Q_snap[0],
         lw=2, color="tab:orange",
-        label="Flow perturbation Q",
+        label="Flow perturbation Q"
     )
 
     ax.set_xlabel("z [m]")
@@ -124,7 +133,7 @@ if __name__ == "__main__":
 
     ax.set_ylim(
         1.1 * min(np.min(A_snap), np.min(Q_snap)),
-        1.1 * max(np.max(A_snap), np.max(Q_snap)),
+        1.1 * max(np.max(A_snap), np.max(Q_snap))
     )
 
     # Time slider
@@ -134,7 +143,7 @@ if __name__ == "__main__":
         label="Time [s]",
         valmin=times[0],
         valmax=times[-1],
-        valinit=times[0],
+        valinit=times[0]
     )
 
     def update(val):
