@@ -100,7 +100,7 @@ function drawFrame(i) {
         }
     }
 
-    Plotly.newPlot("plot", [
+    const data = [
         {
             x: x,
             y: aPlot,
@@ -115,12 +115,22 @@ function drawFrame(i) {
             mode: "lines",
             line: { color: "blue", width: 3 }
         }
-    ], {
+    ];
+
+    const layout = {
         title: `${prefix ? prefix + ' — ' : ''}τ = ${tau.toFixed(5)}`,
         xaxis: { title: xTitle },
         yaxis: { title: yTitle, range: [drawFrame.ymin, drawFrame.ymax] },
         margin: { t: 40, l: 40, b: 50, r: 20 }
-    });
+    };
+
+    // Use newPlot only on first render, then react to preserve zoom
+    if (!drawFrame.initialized) {
+        Plotly.newPlot("plot", data, layout);
+        drawFrame.initialized = true;
+    } else {
+        Plotly.react("plot", data, layout);
+    }
 }
 
 /**********************************************
