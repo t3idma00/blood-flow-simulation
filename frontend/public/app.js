@@ -30,8 +30,9 @@ let simData = null;
 /**********************************************
  * LOAD SIMULATION FROM BACKEND
  **********************************************/
-async function loadSimulation() {
-    const endpoint = `${API_BASE}/simulation/${simName}`;
+async function loadSimulation(params = {}) {
+    const query = new URLSearchParams(params).toString();
+    const endpoint = `${API_BASE}/simulation/${simName}` + (query ? `?${query}` : "");
     console.log("Fetching:", endpoint);
 
     const res = await fetch(endpoint);
@@ -43,14 +44,23 @@ async function loadSimulation() {
 
     simData = await res.json();
 
+    // Reset plotting state for a fresh simulation run
+    drawFrame.ymin = undefined;
+    drawFrame.ymax = undefined;
+    drawFrame.testC1ScaledRange = false;
+    drawFrame.initialized = false;
+
     timeSlider.min = 0;
     timeSlider.max = simData.times.length - 1;
     timeSlider.value = 0;
 
     drawFrame(0);
-    timeSlider.addEventListener("input", () => {
-        drawFrame(parseInt(timeSlider.value));
-    });
+    if (!loadSimulation.initialized) {
+        timeSlider.addEventListener("input", () => {
+            drawFrame(parseInt(timeSlider.value));
+        });
+        loadSimulation.initialized = true;
+    }
 }
 
 /**********************************************
@@ -146,4 +156,17 @@ function drawFrame(i) {
 /**********************************************
  * START
  **********************************************/
+// Wire up optional parameter controls for the LaxW test model page
+const laxwForm = document.getElementById("laxw-controls-form");
+if (laxwForm) {
+    laxwForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const T_FINAL = parseFloat(document.getElementById("param_T_FINAL").value);
+        const A0 = parseFloat(document.getElementById("param_A0").value);
+        const Q0 = parseFloat(document.getElementById("param_Q0").value);
+        loadSimulation({ T_FINAL, A0, Q0 });
+    });
+}
+
+// Initial load with default parameters
 loadSimulation();

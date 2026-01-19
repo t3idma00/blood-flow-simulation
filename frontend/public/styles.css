@@ -45,3 +45,30 @@ body {
   width: 100%;
   height: calc(100vh - 60px);
 }
+
+/* Simulation 3 (LaxW half step) layout tweaks */
+.sim-title {
+  margin: 16px 20px 6px;
+  font-size: 1.4rem;
+}
+
+.sim-controls-bar {
+  padding: 6px 20px 8px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  font-size: 0.9rem;
+}
+
+.sim-controls-bar label {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.sim-controls-bar input,
+.sim-controls-bar button {
+  font-size: 0.85rem;
+  padding: 2px 6px;
+}

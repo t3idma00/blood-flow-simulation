@@ -8,9 +8,19 @@ def get_simulation_list():
     return list_simulations()
 
 @router.get("/simulation/{name}")
-def get_simulation(name: str):
+def get_simulation(
+    name: str,
+    T_FINAL: float | None = None,
+    A0: float | None = None,
+    Q0: float | None = None,
+):
     try:
-        return run_simulation_by_name(name)
+        return run_simulation_by_name(
+            name,
+            T_FINAL=T_FINAL,
+            A0=A0,
+            Q0=Q0,
+        )
     except KeyError:
         raise HTTPException(status_code=404, detail="Simulation not found")
     except Exception as e:

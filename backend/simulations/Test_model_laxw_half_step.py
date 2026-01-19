@@ -1,11 +1,27 @@
 import numpy as np
 
 
-def run_simulation(snap_every: int = 10):
+def run_simulation(
+    snap_every: int = 10,
+    T_FINAL: float = 3.0,
+    A0: float = 1.0,
+    Q0: float = 1.0,
+):
     """Run the damped linear wave test model and
     return (x, times, A_snap, Q_snap) in the standard
     format expected by the FastAPI backend.
 
+    Parameters
+    ----------
+    snap_every : int
+        Store every `snap_every` time step.
+    T_FINAL : float
+        Final simulation time.
+    A0, Q0 : float
+        Amplitudes of the initial A, Q perturbation pulses.
+
+    Returns
+    -------
     x       : (N,) spatial grid (z)
     times   : (num_frames,) time samples
     A_snap  : (num_frames, N) area perturbation snapshots
@@ -28,7 +44,6 @@ def run_simulation(snap_every: int = 10):
     z = np.linspace(0, L, N)
 
     # TIME DISCRETIZATION
-    T_FINAL = 3.0
     dt = 5e-4
     Nt = int(T_FINAL / dt)
 
@@ -38,8 +53,8 @@ def run_simulation(snap_every: int = 10):
     # INITIAL CONDITIONS (SMOOTH GAUSSIANS)
     sigma = 4.0 * dz
 
-    A = np.exp(-((z - 0.7) ** 2) / sigma**2)
-    Q = np.exp(-((z - 0.4) ** 2) / sigma**2)
+    A = A0 * np.exp(-((z - 0.7) ** 2) / sigma**2)
+    Q = Q0 * np.exp(-((z - 0.4) ** 2) / sigma**2)
 
     # BOUNDARY CONDITIONS (FREE FLOW / NON-REFLECTING)
     def inlet_bc(A, Q):
