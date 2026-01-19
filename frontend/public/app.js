@@ -124,11 +124,21 @@ function drawFrame(i) {
         margin: { t: 40, l: 40, b: 50, r: 20 }
     };
 
-    // Use newPlot only on first render, then react to preserve zoom
+    // Use newPlot only on first render; on updates, preserve current zoom
     if (!drawFrame.initialized) {
         Plotly.newPlot("plot", data, layout);
         drawFrame.initialized = true;
     } else {
+        const plotDiv = document.getElementById("plot");
+        if (plotDiv && plotDiv.layout) {
+            const cur = plotDiv.layout;
+            if (cur.xaxis && cur.xaxis.range) {
+                layout.xaxis.range = cur.xaxis.range.slice();
+            }
+            if (cur.yaxis && cur.yaxis.range) {
+                layout.yaxis.range = cur.yaxis.range.slice();
+            }
+        }
         Plotly.react("plot", data, layout);
     }
 }
