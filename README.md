@@ -1,45 +1,91 @@
-# 🌐 Frontend: Simulation Dashboard
 
-The frontend is a lightweight web application that visualizes the results from the blood flow simulation backend.
+# 1D Blood Flow Simulation Project
 
-## 🚀 Quick Start
+This repository contains a one-dimensional (1D) blood flow simulation developed to study **wave propagation, pressure–flow interaction, and numerical behavior** in compliant vessels.
+
+The project documents the models implemented, simulations performed, and observations made during the development process. 
+
+
+
+---
+
+## Project Goal
+
+The main goal of this project is to **develop and test a 1D blood flow solver** capable of simulating flow, cross-sectional area, and pressure evolution in an arterial segment.
+
+The solver is built progressively, starting from simplified test models and extending toward a more realistic artery simulation with physiological forcing. Along the way, different numerical and modeling choices are explored to ensure stability and physically meaningful results.
+
+---
+
+## 🛠️ What Has Been Implemented
+
+### Linear Test Models
+- **Verification:** Simplified linearized wave systems used to verify numerical schemes.
+- **Methods:** Implemented using **MacCormack** and **Lax–Wendroff** type methods.
+- **Focus:** Used to study basic wave propagation and numerical behavior in a controlled setting.
+
+### Healthy-Domain Simulation
+- A simplified artery-like spatial domain.
+- Includes linear damping and smooth initial perturbations.
+- Used to examine wave propagation over longer domains and time intervals.
+
+### Physiological Inlet Forcing
+- Time-dependent inlet pressure waveform based on a **Blackman–Harris-type modulation**.
+- Used to represent a simplified cardiac pressure input.
+
+### Windkessel Outlet Model
+- Implementation of a linearized Windkessel outlet boundary condition.
+- Couples flow and area through an ordinary differential equation (ODE).
+- Introduced to model downstream vascular effects and obtain realistic outlet behavior.
+
+### Full 1D Artery Simulation
+- Combination of linearized blood flow equations, numerical time-stepping schemes, physiological inlet forcing, and Windkessel outlet coupling.
+- Pressure, flow, and vessel area are monitored at multiple locations along the artery.
+
+---
+
+##  Output and Analysis
+
+Simulation outputs include:
+- **Vessel Area** ($A$)
+- **Flow Rate** ($Q$)
+- **Pressure** signals
+
+Results are analyzed qualitatively through time-series plots to assess wave propagation, stability, and overall solution behavior.
+
+---
+
+##  Installation & Setup
+
+This project consists of a **simulation backend** and a **visualization frontend**. Both must be running simultaneously.
 
 ### Prerequisites
-- Node.js (v14+)
-- npm
+- **Python 3.9+**
+- **Node.js (v14+)** and **npm**
 
-### Installation Steps
+> [!IMPORTANT]  
+> The frontend retrieves simulation results from the backend API. Keep **two terminal sessions open** when running the project.
 
-1. **Navigate to the frontend directory:**
-   ```powershell
-   cd frontend
-   ```
+### Backend Setup (Simulation Server)
 
-2. **Install dependencies:**
-   ```powershell
-   npm install
-   ```
+```bash
+cd backend
+python -m venv .venv
+# Windows:
+.\.venv\Scripts\Activate.ps1
+# Mac/Linux:
+source .venv/bin/activate
 
-3. **Start the server:**
-   ```powershell
-   npm start
-   ```
+pip install -r requirements.txt
+python -m uvicorn api.server:app --port 8000
 
-4. **View the application:**
-   Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## 📁 Key Files
+### Frontend Setup (Visualization Dashboard)
 
-- `public/index.html`: Main landing page.
-- `public/app.js`: Core logic for fetching and rendering simulation data.
-- `public/config.js`: Configuration for API endpoints (automatically switches between local and production).
-- `server/index.js`: Express server script.
+cd frontend
+npm install
+npm start
+```
 
-## 📊 Visualization
-
-We use **Chart.js** to render interactive graphs of:
-- Blood Flow (Q)
-- Vessel Area (A)
-- Pressure (P)
-
-Ensure the **Backend** is running on `http://localhost:8000` for the data to load.
+Open the dashboard in your browser:
+http://localhost:3000
